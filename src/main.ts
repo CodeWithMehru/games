@@ -2,7 +2,6 @@ import k from "./kaplayCtx";
 import { makeMotobug, makeRing, makeSonic } from "./entities";
 import { GameObj } from "kaplay";
 
-
 k.loadSprite("chemical-bg", "graphics/chemical-bg.png");
 k.loadSprite("platforms", "graphics/platforms.png");
 k.loadSprite("sonic", "graphics/sonic.png", {
@@ -30,23 +29,18 @@ k.loadSound("hyper-ring", "sounds/HyperRing.wav");
 k.loadSound("jump", "sounds/Jump.wav");
 k.loadSound("ring", "sounds/Ring.wav");
 
-
 let health = 100;
 let healthBar: GameObj;
-let healthBarBG: GameObj;
 let gameSpeed = 200;
-
 
 function startGame() {
   k.scene("game", () => {
     k.setGravity(3100);
 
-  
     health = 100;
     gameSpeed = 200; 
     let score = 0;
     let scoreMultiplier = 0;
-
 
     const bgPieceWidth = 2880;
     const bgPieces = [
@@ -54,31 +48,25 @@ function startGame() {
       k.add([k.sprite("chemical-bg"), k.pos(bgPieceWidth, 0), k.opacity(0.8), k.scale(1.5)]),
     ];
 
-    const platformWidth = 2560;
     const platforms = [
       k.add([k.sprite("platforms"), k.pos(0, 450), k.scale(2)]),
       k.add([k.sprite("platforms"), k.pos(2560, 450), k.scale(2)]),
     ]; 
 
-
     const sonic = makeSonic(k.vec2(100, 100));
     sonic.setControls();
     sonic.setEvents();
 
-  
     const scoreText = k.add([k.text("SCORE : 0", { font: "mania", size: 48 }), k.pos(20, 20), k.z(2)]);
     const ringCollectUI = sonic.add([k.text("", { font: "mania", size: 18 }), k.color(255, 255, 0), k.anchor("center"), k.pos(30, -10)]);
 
-    healthBarBG = k.add([k.rect(200, 20), k.pos(20, 80), k.color(0, 0, 255)]);
-    healthBar   = k.add([k.rect(200, 20), k.pos(20, 80), k.color(255, 0, 0)]); 
+    healthBar = k.add([k.rect(200, 20), k.pos(20, 80), k.color(255, 0, 0)]); 
 
     function updateHealthUI() {
       healthBar.width = health * 2; 
     }
 
-
     k.add([k.rect(1280, 200), k.opacity(0), k.pos(0, 641), k.area(), k.body({ isStatic: true })]);
-
 
     const spawnRing = () => {
       const ring = makeRing(k.vec2(1280, 610));
@@ -87,7 +75,6 @@ function startGame() {
       k.wait(k.rand(0.5, 3), spawnRing);
     };
     spawnRing();
-
 
     sonic.onCollide("ring", (ring: GameObj) => {
       k.play("ring", { volume: 0.5 });
@@ -98,15 +85,13 @@ function startGame() {
       k.wait(1, () => (ringCollectUI.text = ""));
     });
 
-
     const spawnMotoBug = () => {
       const motobug = makeMotobug(k.vec2(1280, 595));
-      motobug.onUpdate(() => motobug.move(-(gameSpeed + 400), 0)); // 🔥 faster enemy
+      motobug.onUpdate(() => motobug.move(-(gameSpeed + 400), 0));
       motobug.onExitScreen(() => motobug.pos.x < 0 && k.destroy(motobug));
       k.wait(k.rand(0.5, 2.5), spawnMotoBug);
     };
     spawnMotoBug();
-
 
     sonic.onCollide("enemy", (enemy: GameObj) => {
       if (!sonic.isGrounded()) {
@@ -135,7 +120,6 @@ function startGame() {
 
     sonic.onGround(() => (scoreMultiplier = 0));
 
-  
     const regenTimes = [6, 8, 10];
     let regenIndex = 0;
     function regenHealth() {
@@ -163,18 +147,17 @@ function startGame() {
         bgPieces[0].moveTo(bgPieces[1].pos.x + 2880, 0);
         bgPieces.push(bgPieces.shift()!);
       }
-      bgPieces[0].move(-150, 0); // 🔥 faster background
+      bgPieces[0].move(-150, 0);
       bgPieces[1].moveTo(bgPieces[0].pos.x + 2880, 0);
 
       if (platforms[1].pos.x < 0) {
         platforms[0].moveTo(platforms[1].pos.x + 2560, platforms[1].pos.y);
         platforms.push(platforms.shift()!);
       }
-      platforms[0].move(-gameSpeed, 0); // 🔥 faster platforms
+      platforms[0].move(-gameSpeed, 0);
       platforms[1].moveTo(platforms[0].pos.x + 2560, platforms[0].pos.y);
     });
   });
-
 
   k.scene("game-over", () => {
     let bestScore: number = k.getData("best-score") || 0;
@@ -202,6 +185,5 @@ function startGame() {
 
   k.go("game");
 }
-
 
 startGame();

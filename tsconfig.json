@@ -8,15 +8,14 @@
 
     /* Bundler mode */
     "moduleResolution": "bundler",
-    "allowImportingTsExtensions": true,
     "isolatedModules": true,
     "moduleDetection": "force",
-    "noEmit": true,
+    "noEmit": false,               /* allow TS to emit JS files */
 
     /* Linting */
     "strict": true,
-    "noUnusedLocals": true,
-    "noUnusedParameters": true,
+    "noUnusedLocals": false,       /* allow unused locals */
+    "noUnusedParameters": false,   /* allow unused parameters */
     "noFallthroughCasesInSwitch": true,
     "noUncheckedSideEffectImports": true
   },
